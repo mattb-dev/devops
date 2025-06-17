@@ -1,0 +1,33 @@
+---
+name: Java CI with Maven
+
+on:
+  workflow_call:
+    inputs:
+      jdk-version:
+        description: "The jdk version"
+        default: '17'
+        required: false
+        type: string
+      jdk-distribution:
+        description: "The jdk distribution"
+        default: 'corretto'
+        required: false
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
+    - name: Set up JDK ${{ inputs.jdk-version }}
+      uses: actions/setup-java@v4
+      with:
+        java-version: ${{ inputs.jdk-version }}
+        distribution: ${{ inputs.jdk-distribution }}
+        cache: "maven"
+
+    - name: Build with maven
+      run: mvn -B -e -ntp "-Dstyle.color=always" verify
